@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sharpen · Akhara Loop</title>
+<link rel="apple-touch-icon" href="icon-sharpen.png">
+<link rel="icon" type="image/png" href="icon-sharpen.png">
+<link rel="manifest" href="sharpen.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Sharpen">
+<meta name="theme-color" content="#0A0A0A">
+<style>
+  :root{
+    --carbon:#0A0A0A; --panel:#121212; --panel2:#171410; --orange:#FF6A00; --off:#F3EFE8;
+    --dim:#8A857C; --faint:#4a463f; --line:#262320; --green:#7fd07f;
+    --mono:'Geist Mono','SF Mono',ui-monospace,Menlo,monospace;
+    --serif:'Cormorant Garamond',Georgia,serif;
+    --sans:ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--carbon);color:var(--off);font-family:var(--sans);line-height:1.5;
+    -webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
+  header{padding:24px 18px 14px;border-bottom:1px solid var(--line)}
+  .kick{font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--orange)}
+  h1{font-family:var(--serif);font-weight:600;font-size:34px;line-height:1;margin:6px 0 4px;letter-spacing:-.01em}
+  .sub{color:var(--dim);font-size:12.5px}
+  /* progress */
+  .prog{display:flex;gap:4px;padding:14px 18px 0;flex-wrap:wrap}
+  .pdot{width:22px;height:4px;border-radius:2px;background:var(--line)}
+  .pdot.seen{background:#5a3410}
+  .pdot.known{background:var(--orange)}
+  .pdot.cur{background:var(--off)}
+  /* card */
+  .wrap{flex:1;display:flex;flex-direction:column;max-width:680px;width:100%;margin:0 auto;padding:14px 18px 28px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px 18px;flex:1;display:flex;flex-direction:column}
+  .fig{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+  .fig b{color:var(--orange);font-weight:400}
+  h2{font-family:var(--serif);font-weight:600;font-size:30px;line-height:1.05;margin:6px 0 12px;letter-spacing:-.01em}
+  .prompt{font-size:16.5px;color:var(--off);background:var(--panel2);border-left:2px solid var(--orange);
+    border-radius:0 8px 8px 0;padding:13px 15px;margin-bottom:6px}
+  .prompt .pl{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--orange);display:block;margin-bottom:6px}
+  .hint{font-size:12px;color:var(--dim);margin:10px 2px 14px;font-style:italic}
+  /* escape hatches */
+  .hatches{display:grid;gap:9px;margin-top:auto}
+  .hatch{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#0d0d0d}
+  .hbtn{width:100%;text-align:left;background:none;border:none;color:var(--off);font-family:var(--sans);
+    font-size:14.5px;padding:13px 15px;cursor:pointer;display:flex;align-items:center;gap:10px;font-weight:600}
+  .hbtn .ic{font-family:var(--mono);font-size:11px;color:var(--orange);border:1px solid #5a3410;border-radius:5px;
+    padding:2px 6px;letter-spacing:.05em;flex-shrink:0}
+  .hbtn:active{background:#141414}
+  .hbody{max-height:0;overflow:hidden;transition:max-height .3s ease;padding:0 15px;font-size:14.5px;color:#d8d2c7;line-height:1.55}
+  .hbody.open{max-height:600px;padding:0 15px 15px}
+  .hbody em{color:var(--orange);font-style:normal}
+  /* footer nav */
+  .nav{display:flex;gap:10px;margin-top:16px;align-items:center}
+  .nav button{flex:1;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+    padding:14px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--off);cursor:pointer}
+  .nav button:active{border-color:var(--orange)}
+  .nav .know{border-color:#2c4a2c;color:var(--green)}
+  .nav .know.on{background:#16240f}
+  .done{text-align:center;padding:40px 18px}
+  .done h2{font-size:34px}
+  .seg{font-family:var(--mono);font-size:9px;color:var(--faint);letter-spacing:.22em;text-transform:uppercase;text-align:center;padding:14px}
+</style>
+</head>
+<body>
+<header>
+  <div class="kick">AKHARA LOOP · MODULE 04</div>
+  <h1>Sharpen.</h1>
+  <p class="sub">Recall first. Stuck? Never move on confused — tap a hatch and learn it for this exact case.</p>
+</header>
+
+<div class="prog" id="prog"></div>
+
+<div class="wrap" id="wrap">
+  <div class="card" id="card"></div>
+  <div class="nav">
+    <button id="prev">‹ Back</button>
+    <button id="know" class="know">I knew it</button>
+    <button id="next">Next ›</button>
+  </div>
+</div>
+
+<div class="seg">SANKALPA · SHARPEN v1 · LEARN ON EVERY CARD</div>
+
+<script>
+const DECK = [
+  {
+    c:"Counter-positioning",
+    p:"What is counter-positioning, and why can't a big incumbent just copy you?",
+    teach:"A moat where you adopt a model the incumbent <em>can't</em> copy — not because they're dumb, but because copying it would damage their existing business. Netflix-by-mail killed late fees; Blockbuster couldn't follow because late fees <em>were</em> a huge slice of their profit. The incumbent is trapped by their own success.",
+    analogy:"A judo throw — you use the bigger opponent's own weight against them. Their size (existing model + profits) is the exact thing that stops them chasing you.",
+    explain:"Say it in one line: name the new model, then name what copying it would <em>cost</em> the incumbent. If copying is free for them, it isn't counter-positioning."
+  },
+  {
+    c:"Founder-market fit",
+    p:"What is founder-market fit, and why does it beat a bigger market?",
+    teach:"The overlap between what the market wants and what <em>you specifically</em> are built to do, know, and enjoy. It's why you (tech brain + a construction-dynasty dad) beat a generic founder on the construction play — not a bigger market, an unfair fit. Investors ask 'why you?' — that's this.",
+    analogy:"A key cut for one lock. A shiny key (idea) that doesn't fit your lock (you) opens nothing. The fit beats the shine.",
+    explain:"Two questions, never one: 'Is this good — AND is it good for <em>me</em> to be the one doing it?' Answer both before committing."
+  },
+  {
+    c:"Distribution vs. defensibility",
+    p:"A moat and distribution solve two different problems — what are they?",
+    teach:"A moat answers 'once I'm in, why can't I be replaced?' (retention). Distribution answers 'how do I reach the first customer AT ALL?' (acquisition). Your ideas kept dying on the <em>second</em> — great moats, no way to reach the buyer. Founders fall for moats because they're fun; distribution is what actually kills you.",
+    analogy:"The moat is the castle walls; distribution is the road to the castle. A perfect castle no one can reach is an expensive ruin.",
+    explain:"'Can I REACH and CLOSE the first ten without begging?' If yes, you have distribution. The moat only matters after that's a yes."
+  },
+  {
+    c:"The Mom Test",
+    p:"Why should you never ask a customer 'would you buy this?'",
+    teach:"Because people lie to be nice — 'sure, sounds great' costs them nothing. Ask about <em>past behaviour and real pain</em> instead: 'walk me through the last time X cost you money.' The past can't be faked; opinions about the future can. Named because the questions are so good even your mom couldn't lie with them.",
+    analogy:"'Do you exercise?' (everyone says yes) vs 'when did you last go to the gym?' (the truth). Ask for the receipt, not the intention.",
+    explain:"'Ask about their past, not my idea.' Never pitch-then-ask-if-they-like-it. Ask what already hurts; let them hand you the pain."
+  },
+  {
+    c:"Bus-factor",
+    p:"What's the bus-factor, and why is a bus-factor of 1 both a moat and a trap?",
+    teach:"The number of people who'd have to vanish before the thing stops. If only <em>you</em> can run it, it's 1. Feels like a moat ('I'm irreplaceable') but it's a noose: you can't sell it (value walks out with you), can't take a day off, and enterprise buyers are <em>trained</em> to refuse single-person dependencies.",
+    analogy:"A load-bearing wall that's also you. Impressive that the house needs you — until you realise you can never leave the house.",
+    explain:"'How many people vanishing kills this?' If the answer's one, and that one is you, you built a job, not an asset."
+  },
+  {
+    c:"Hot path vs. cold path",
+    p:"Where should your irreplaceable judgment live — and where should it NOT?",
+    teach:"From systems design. The HOT path = real-time runtime — must be automated, self-healing, judgment-free (judgment here = you on a 3am pager). The COLD path = the design, rules, taste — never urgent, always yours. Put your genius in the cold path (encoded once); let the hot path run it mechanically. That's 'irreplaceable in creation, absent in operation.'",
+    analogy:"A chef who's left the line: the recipes + standards (cold path) are 100% theirs; the cooks execute them nightly (hot path) with the chef asleep. Taste everywhere, chef absent.",
+    explain:"'My judgment goes in at design-time as rules/data; the system applies it at runtime without me.' If running it needs your hands daily, it's in the wrong path."
+  },
+  {
+    c:"Generator ≠ grader",
+    p:"Why must the thing that generates an idea NOT be the thing that grades it?",
+    teach:"A generator goes soft on its own baby. You saw it: I graded my own Foundry idea 'amber'; an independent red-team killed it 'red' — and the red-team was right. A separate, adversarial critic (no ego in the output) catches what the maker can't. It's how AlphaGo works, how newsrooms split reporter from editor, courts split prosecutor from judge.",
+    analogy:"Marking your own exam vs an external examiner. You'll always find a reason your answer was 'basically right.' The stranger won't.",
+    explain:"'Whoever made it can't be trusted to judge it.' Split the two roles — always — including when the maker is you."
+  },
+  {
+    c:"Optionality as liability",
+    p:"When is keeping your options open a BAD thing?",
+    teach:"Optionality feels like wealth — more choices, more freedom. But for a chronic non-committer it's the exact mechanism that prevents the one commitment that compounds. A shiny backup makes picking the primary feel like 'leaving money on the table,' so you never pick. The asset isn't the open option — it's the closed one that's finally earning.",
+    analogy:"Standing in a doorway with five doors, feeling rich because you <em>could</em> take any — while everyone who picked a door is three rooms ahead.",
+    explain:"'An option only pays when you exercise it.' Held forever, it's not an asset — it's an excuse."
+  }
+];
+
+const wrap=document.getElementById('wrap'), card=document.getElementById('card'), prog=document.getElementById('prog');
+const ST=JSON.parse(localStorage.getItem('sharpen')||'{}'); // {seen:[], known:[]}
+ST.seen=ST.seen||[]; ST.known=ST.known||[];
+let i=0;
+function save(){localStorage.setItem('sharpen',JSON.stringify(ST));}
+function drawProg(){
+  prog.innerHTML='';
+  DECK.forEach((_,n)=>{const d=document.createElement('div');d.className='pdot'+
+    (n===i?' cur':ST.known.includes(n)?' known':ST.seen.includes(n)?' seen':'');prog.appendChild(d);});
+}
+function render(){
+  if(!ST.seen.includes(i)){ST.seen.push(i);save();}
+  const d=DECK[i];
+  card.innerHTML=`
+    <div class="fig">Fig. ${String(i+1).padStart(2,'0')} — <b>concept</b> · ${i+1} / ${DECK.length}</div>
+    <h2>${d.c}</h2>
+    <div class="prompt"><span class="pl">Recall — in your own words</span>${d.p}</div>
+    <div class="hint">Try to answer out loud first. Only then tap a hatch.</div>
+    <div class="hatches">
+      <div class="hatch"><button class="hbtn"><span class="ic">?</span> I don't know — teach me</button><div class="hbody">${d.teach}</div></div>
+      <div class="hatch"><button class="hbtn"><span class="ic">≈</span> Give me an analogy</button><div class="hbody">${d.analogy}</div></div>
+      <div class="hatch"><button class="hbtn"><span class="ic">↳</span> Explain it for me</button><div class="hbody">${d.explain}</div></div>
+    </div>`;
+  card.querySelectorAll('.hbtn').forEach(b=>b.addEventListener('click',()=>{
+    const body=b.nextElementSibling;body.classList.toggle('open');
+  }));
+  const kb=document.getElementById('know');
+  kb.classList.toggle('on',ST.known.includes(i));
+  kb.textContent=ST.known.includes(i)?'✓ Knew it':'I knew it';
+  drawProg();
+}
+document.getElementById('next').onclick=()=>{i=(i+1)%DECK.length;render();};
+document.getElementById('prev').onclick=()=>{i=(i-1+DECK.length)%DECK.length;render();};
+document.getElementById('know').onclick=()=>{
+  if(ST.known.includes(i))ST.known=ST.known.filter(x=>x!==i);else ST.known.push(i);
+  save();render();
+};
+render();
+</script>
+</body>
+</html>
