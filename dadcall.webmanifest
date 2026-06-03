@@ -1,0 +1,11 @@
+{
+  "name": "Dad · Discovery Call",
+  "short_name": "Dad Call",
+  "start_url": "./dad-discovery-call.html",
+  "display": "standalone",
+  "background_color": "#0A0A0A",
+  "theme_color": "#0A0A0A",
+  "icons": [
+    { "src": "icon-dadcall.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

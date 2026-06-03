@@ -1,0 +1,11 @@
+{
+  "name": "Sankalpa · Side Projects",
+  "short_name": "Side Ideas",
+  "start_url": "./side-projects.html",
+  "display": "standalone",
+  "background_color": "#0A0A0A",
+  "theme_color": "#0A0A0A",
+  "icons": [
+    { "src": "icon-sideideas.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
