@@ -31,6 +31,10 @@
   .mind li{font-size:14px;padding-left:18px;position:relative}
   .mind li::before{content:"→";position:absolute;left:0;color:var(--orange);font-family:var(--mono)}
   .mind b{color:var(--off)}
+  .planlist{list-style:none;display:grid;gap:9px;margin-top:4px}
+  .planlist li{font-size:14.5px;padding-left:18px;position:relative}
+  .planlist li::before{content:"→";position:absolute;left:0;color:var(--orange);font-family:var(--mono)}
+  .planlist b{color:var(--off)}
   /* section */
   section{margin:30px 0 0}
   .sechead{display:flex;align-items:baseline;gap:10px;margin:0 0 4px;padding-bottom:8px;border-bottom:1px solid var(--line)}
@@ -77,7 +81,8 @@
       <li><b>You're interviewing, not chatting.</b> Tell him that up front — it earns his serious attention and he'll give you real answers.</li>
       <li><b>He doesn't use AI — so never ask "where would you use AI."</b> Ask about his <b>pains</b>. You do the AI translation in your head. He just talks about his business, which he loves.</li>
       <li><b>Talk 20%, listen 80%.</b> The longer he talks about a pain, the bigger it is. Let silences sit. Don't pitch — extract.</li>
-      <li><b>Goal of the call:</b> (1) find the #1 pain, (2) confirm others have it too, (3) get him to say yes to being the first build. That's the whole game.</li>
+      <li><b>Your dad backs solid, not fragile.</b> He's a planner — he'll get on board with <em>anything</em> if there's a start-to-finish plan with the failure-points mitigated, and the more <b>value</b> it brings the faster he says yes. So: <b>lead with the value</b>, and when he pushes on risk, that's a <em>buying signal</em> — "good question, here's how I make sure it can't fail" beats any hype.</li>
+      <li><b>Goal of the call:</b> (1) find the #1 pain, (2) get the rand value of killing it, (3) get him to say yes to <em>seeing your plan</em> — not a blind commit. The plan wins him; the call earns the right to bring it.</li>
     </ul>
   </div>
 
@@ -168,17 +173,30 @@
   <section>
     <div class="sechead"><span class="num">05</span><h2>The ask — make him the first</h2></div>
     <p class="lead">The close. You're not asking for money — you're offering him a head start and asking for proof + intros.</p>
-    <div class="say">Here's what I want: let me build it <span class="ph">with your company as the first one.</span> You get it first, you get it free while we prove it. I get a real case study with a Project-of-the-Year company's name on it. And once it's working and saving you money — you introduce me to the people you know. That's the deal. You in?</div>
+    <div class="say">Here's what I want — and I'm not asking you to bet on a vibe. Let me take what we just found and bring you back a <span class="ph">full plan</span>: start to finish, every way it could fail and exactly how I've mitigated each one, and the <span class="ph">rand it saves or makes you.</span> You only back it once it's obviously solid. We build it <span class="ph">with your company as the first one</span> — you get it first and free while we prove it, I get a Project-of-the-Year case study, and once it's working you introduce me. Fair?</div>
+  </section>
+
+  <!-- AFTER -->
+  <section>
+    <div class="sechead"><span class="num">06</span><h2>After the call — the plan that wins him</h2></div>
+    <p class="lead">The call finds the pain. THIS wins the yes. Your dad backs what's planned to the tee and de-risked — so within a day, bring him one page:</p>
+    <ul class="planlist">
+      <li><b>The outcome + the number</b> — the pain gone, in his words, and the rand it saves or makes (his figure from Q8). Value first.</li>
+      <li><b>Start → finish</b> — plain steps: what you build, in what order, what he gives you (data, an hour of his estimator), what he gets back, by when.</li>
+      <li><b>How it can't fail</b> — the 3 ways it could go wrong, each with its mitigation. This section <em>is</em> the sell — it's "solid, not fragile" on paper.</li>
+      <li><b>His risk = zero</b> — free while you prove it, his data stays his, no lock-in, kill-switch any time. Nothing to lose, the number to gain.</li>
+    </ul>
   </section>
 
   <!-- VERDICT -->
   <div class="verdict">
     <h2>The <em>verdict</em> — fill this before you hang up</h2>
-    <p class="lead" style="margin-top:6px">If you can't fill all four, ask one more question. This is what the whole call was for.</p>
+    <p class="lead" style="margin-top:6px">If you can't fill all five, ask one more question. This is what the whole call was for.</p>
     <div class="vrow"><label>① The #1 pain (the product)</label><textarea id="v1" placeholder="In his words…"></textarea></div>
-    <div class="vrow"><label>② What he'd pay / month</label><textarea id="v2" placeholder="R___ /mo · cost of not having it: ___"></textarea></div>
+    <div class="vrow"><label>② What he'd pay / month + cost of NOT having it</label><textarea id="v2" placeholder="R___ /mo · costs him R___ without it"></textarea></div>
     <div class="vrow"><label>③ Do other owners have it too?</label><textarea id="v3" placeholder="Yes / No / who else…"></textarea></div>
-    <div class="vrow"><label>④ Is he in as the first build?</label><textarea id="v4" placeholder="Yes / No / what he needs to say yes…"></textarea></div>
+    <div class="vrow"><label>④ His biggest worry / what would make him say no</label><textarea id="v5" placeholder="The risk to mitigate in your plan…"></textarea></div>
+    <div class="vrow"><label>⑤ Is he in to see the plan?</label><textarea id="v4" placeholder="Yes / what he needs to commit…"></textarea></div>
   </div>
 
   <p class="saved" id="savedNote">— notes save automatically on this device —</p>
